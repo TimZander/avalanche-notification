@@ -18,7 +18,6 @@ def get_json_for_areaId(areaId):
 def get_areaId_from_lat_long(lat, long):
     regional_discussions = load_json_from_url(url="https://avalanche.state.co.us/api-proxy/avid?_api_proxy_uri=/products/all/area?productType=regionaldiscussion&datetime="+url_datetime+"&includeExpired=true", method="GET")
     avalanche_forecasts = load_json_from_url(url="https://avalanche.state.co.us/api-proxy/avid?_api_proxy_uri=/products/all/area?productType=avalancheforecast&datetime="+url_datetime+"&includeExpired=true", method="GET")
-    #print("forecasts")
     areas = []
     for avalanche_forecast in avalanche_forecasts["features"]:
         polygon_coordinates = avalanche_forecast["geometry"]["coordinates"]
@@ -35,8 +34,17 @@ def get_areaId_from_lat_long(lat, long):
                 areas.append(regional_discussion["id"])
     return areas
 
+def print_avalancheforecast(product):
+    print(product["forecaster"])
+
+def print_product(product):
+    print(product["title"])
+    print(product["type"])
+    if product["type"] == "avalancheforecast":
+        print_avalancheforecast(product)
+
 areaIds = get_areaId_from_lat_long(lat = 39.49460789109591, long = -106.04589843749999)
 for areaId in areaIds:
     product = get_json_for_areaId(areaId=areaId)
-    print(product["title"])
-    #print(product[])
+    print_product(product=product)
+    print()
