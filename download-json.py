@@ -1,8 +1,10 @@
 from requests import request
 import json
 from shapely.geometry import Point, Polygon
+import datetime
 
-url_datetime = "2023-01-29T21:30:00.000Z"
+url_datetime = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')
+#url_datetime = "2023-01-29T21:30:00.000Z"
 
 def load_json_from_url(url, method):
     return json.loads(request(method=method,url=url).text)
@@ -36,12 +38,23 @@ def get_areaId_from_lat_long(lat, long):
 
 def print_avalancheforecast(product):
     print(product["forecaster"])
+    for summary in product["avalancheSummary"]["days"]:
+        print("date: " + summary["date"])
+        print("summary: " + summary["content"])
+    #print(product)
+
+def print_regionaldiscussion(product):
+    print(product["forecaster"])
+    print(product["message"])
 
 def print_product(product):
     print(product["title"])
     print(product["type"])
+    print('Expires: ' + product["expiryDateTime"])
     if product["type"] == "avalancheforecast":
         print_avalancheforecast(product)
+    if product["type"] == "regionaldiscussion":
+        print_regionaldiscussion(product)
 
 areaIds = get_areaId_from_lat_long(lat = 39.49460789109591, long = -106.04589843749999)
 for areaId in areaIds:
